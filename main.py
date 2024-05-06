@@ -1,5 +1,4 @@
 import pygame
-# from pygame.locals import *
 import math
 import random
 
@@ -174,29 +173,7 @@ exit_btn = Button(window_width // 2 - 100, window_height // 2 + 70, exit_btn_img
 restart_btn = Button(window_width // 2 - 100, window_height // 2 - 80, restart_btn_img)
 exit_menu_btn = Button(window_width // 2 - 100, window_height // 2 - 10, exit_btn_img)
 
-# def main_menu():
 
-#     run = True
-
-#     while run:
-#         game_window.blit(start_bg, (0, 0))
-#         game_window.blit(title_img, (170, 110))
-
-#         if start_btn.draw() == True:
-#                 main_game()
-
-
-#         if exit_btn.draw() == True:
-#                 run = False
-
-
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 run = False
-        
-#         pygame.display.update()
-
-#     pygame.quit()
 
 def main_game():
 
@@ -281,7 +258,7 @@ def main_game():
                 score = reset_game()
 
             if exit_menu_btn.draw() == True:
-                main()
+                run = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -326,5 +303,5 @@ def main():
 
 
 
-
+# run main game function
 main()
