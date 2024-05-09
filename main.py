@@ -25,6 +25,15 @@ start_btn_img = pygame.image.load('assets/buttons/start_btn.png')
 exit_btn_img = pygame.image.load('assets/buttons/exit_btn.png')
 restart_btn_img = pygame.image.load('assets/buttons/restart_btn.png')
 
+# get sound effects
+wing_flap_sfx = pygame.mixer.Sound('assets/sounds/wingFlap_sfx.wav')
+point_sfx = pygame.mixer.Sound('assets/sounds/point_sfx.wav')
+hit_sfx = pygame.mixer.Sound('assets/sounds/hit_sfx.wav')
+
+# plays the bg music at title screen
+bg_sfx = pygame.mixer.music.load('assets/sounds/background_music.wav')
+pygame.mixer.music.play(-1)
+
 # score text variables
 font = pygame.font.SysFont('Impact', 60)
 white = (255, 255, 255)
@@ -39,6 +48,16 @@ stalactite_frequency = 1000 #milliseconds
 last_stalactite = pygame.time.get_ticks() - stalactite_frequency
 score = 0
 pass_stalactite = False
+
+def sfx_play(sfx_file):
+    sfx_file.play()
+
+def object_collide_sfx():
+    pygame.mixer.music.load('assets/sounds/hit_sfx.wav')
+    pygame.mixer.music.play()
+
+def sfx_pause():
+    pygame.mixer.pause()
 
 
 def draw_text(text, font, text_col, x, y):
@@ -151,7 +170,7 @@ class Button():
         # get mouse position
         position = pygame.mouse.get_pos()
 
-        # check if mouse it at the button
+        # check if mouse hit the button
         if self.rect.collidepoint(position):
             if pygame.mouse.get_pressed()[0] == 1:
                 action = True
@@ -203,9 +222,11 @@ def main_game():
                 and bat_group.sprites()[0].rect.right < stalactite_group.sprites()[0].rect.right\
                 and pass_stalactite == False:
                 pass_stalactite = True
+                
             
             if pass_stalactite == True:
                 if bat_group.sprites()[0].rect.right > stalactite_group.sprites()[0].rect.right:
+                    sfx_play(point_sfx) # plays point sound
                     score += 1
                     pass_stalactite = False
         
@@ -214,7 +235,11 @@ def main_game():
        
         # detect collision
         if pygame.sprite.groupcollide(bat_group, stalactite_group, False, False) or bat_position.rect.top < 0:
+            object_collide_sfx()
             game_over = True
+            
+
+       
 
 
         # check if the bat hit the ground
@@ -241,7 +266,7 @@ def main_game():
             for i in range(0, tiles):
                 game_window.blit(ground_bg, (i * ground_bg_width + scroll_speed, 478))
 
-            scroll_speed -= 4
+            scroll_speed -= 10
 
 
             # reset scroll
@@ -255,6 +280,7 @@ def main_game():
         if game_over == True:
             if restart_btn.draw() == True:
                 game_over = False
+                pygame.mixer.music.stop()
                 score = reset_game()
 
             if exit_menu_btn.draw() == True:
@@ -278,12 +304,11 @@ def main():
 
     while run:
 
-        game_window.fill("black")
-
         game_window.blit(start_bg, (0, 0))
         game_window.blit(title_img, (170, 110))
 
         if start_btn.draw() == True:
+                pygame.mixer.music.stop() #stops the bg music
                 main_game()
 
 
@@ -303,5 +328,5 @@ def main():
 
 
 
-# run main game function
+# runs main game function
 main()
