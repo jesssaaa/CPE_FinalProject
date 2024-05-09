@@ -24,11 +24,11 @@ ground_bg_width = ground_bg.get_width()
 start_btn_img = pygame.image.load('assets/buttons/start_btn.png')
 exit_btn_img = pygame.image.load('assets/buttons/exit_btn.png')
 restart_btn_img = pygame.image.load('assets/buttons/restart_btn.png')
+game_over_img = pygame.image.load('assets/background/game_over.png')
 
 # get sound effects
-wing_flap_sfx = pygame.mixer.Sound('assets/sounds/wingFlap_sfx.wav')
+wing_flap_sfx = pygame.mixer.Sound('assets/sounds/fly_sfx.wav')
 point_sfx = pygame.mixer.Sound('assets/sounds/point_sfx.wav')
-hit_sfx = pygame.mixer.Sound('assets/sounds/hit_sfx.wav')
 
 # plays the bg music at title screen
 bg_sfx = pygame.mixer.music.load('assets/sounds/background_music.wav')
@@ -54,7 +54,7 @@ def sfx_play(sfx_file):
 
 def object_collide_sfx():
     pygame.mixer.music.load('assets/sounds/hit_sfx.wav')
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(0)
 
 def sfx_pause():
     pygame.mixer.pause()
@@ -110,6 +110,7 @@ class Bat(pygame.sprite.Sprite):
             # bat jump
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
+                sfx_play(wing_flap_sfx)
                 self.velocity = -10
             
             # prevents the bat to jump so high by long press
@@ -278,11 +279,13 @@ def main_game():
                 
         # check for game over and restart
         if game_over == True:
+            game_window.blit(game_over_img, (110, 110))
+            
             if restart_btn.draw() == True:
-                game_over = False
                 pygame.mixer.music.stop()
+                game_over = False
                 score = reset_game()
-
+                
             if exit_menu_btn.draw() == True:
                 run = False
 
